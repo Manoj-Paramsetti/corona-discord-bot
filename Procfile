@@ -1,1 +1,1 @@
-worker: python setup.py
+heroku: python setup.py

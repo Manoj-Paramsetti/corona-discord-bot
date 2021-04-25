@@ -18,11 +18,11 @@ def getcases(country = "global"):
 	data = json.loads(response.text)
 	return data, country
 
-
 @client.event
 async def on_ready():
 	print("We have logged in as {0.user}".format(client))
 	await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='!corona'))
+
 @client.event
 async def on_message(message):
 	
@@ -40,21 +40,26 @@ async def on_message(message):
 	
 	#checks when someone says corona
 	if message.content.startswith("!corona"):
+
 		if message.content == "!corona":
 			data, place = getcases() 
 			confirmed, recovered, death = data["confirmed"]["value"], data["recovered"]["value"], data["deaths"]["value"]
 			active = confirmed - (recovered + death)
 			await message.channel.send(' **'+place.upper()+' CORONA CASES STATS**\n**Active cases:** '+str(active)+'\n**Recovered:** '+str(recovered)+'\n**Death:** '+str(death)+'\n**Total Confirmed:** '+str(confirmed)+'')
+
 		country = message.content.split() 
 		if len(country) >= 2:
+
 			#showing available places
 			if country[1] == "list":
 				#Showing list of places
 				await message.channel.send("List of countries available:\n```yaml\n"+countries+"```")
+
 			else:
 				Country = ""
 				#replacing space with %20 for web request 
 				Country = Country.replace(" ", "%20")
+
 				#taking the splited element into concatenated string
 				for i in range(1,len(country)):
 					Country += country[i] + " " 
@@ -69,6 +74,6 @@ async def on_message(message):
 				#This will work once author gives incorrect value to !corona token
 				except KeyError:
 					await message.channel.send("Send the correct arguments. Check the list of places using `!corona list`")
-#Running bot using token id importing from .env file
 
+#Running bot using token id importing from .env file
 client.run(os.getenv('TOKEN'))

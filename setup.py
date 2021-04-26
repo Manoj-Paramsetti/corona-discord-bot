@@ -40,11 +40,12 @@ async def on_message(message):
 	#checks when someone says help
 	if message.content.startswith("!help"):
 		embed=discord.Embed(title="Help for Corona Bot", color=discord.Color.blue())
-		embed.add_field(name="!corona help", value="Says hello and shows how to open help", inline=True)
+		embed.add_field(name="!hello", value="Says hello and shows how to open help", inline=True)
+		embed.add_field(name="!corona help or !help", value="Shows available commands", inline=True)
 		embed.add_field(name="!corona", value="To get global corona virus status", inline=True)
 		embed.add_field(name="!corona countryname", value="To get corona virus status in particular country", inline=True)
-		embed.add_field(name="!corona list", value="To get list", inline=True)
-		embed.add_field(name="!corona list n", value="To get list n. Here n is page number(1-4)", inline=True)
+		embed.add_field(name="!corona list", value="Shows page 1 of list", inline=True)
+		embed.add_field(name="!corona list n", value="To get list n page, Here n is page number(1-4)", inline=True)
 		embed.set_footer(text="Type '!corona help' to know, how to see the other pages")
 		
 		await message.channel.send(embed=embed)
@@ -109,11 +110,12 @@ async def on_message(message):
 
 			elif  country[1] == "help":
 				embed=discord.Embed(title="Help for Corona Bot", color=discord.Color.blue())
-				embed.add_field(name="!corona help", value="Says hello and shows how to open help", inline=True)
+				embed.add_field(name="!hello", value="Says hello and shows how to open help", inline=True)
+				embed.add_field(name="!corona help or !help", value="Shows available commands", inline=True)
 				embed.add_field(name="!corona", value="To get global corona virus status", inline=True)
 				embed.add_field(name="!corona countryname", value="To get corona virus status in particular country", inline=True)
-				embed.add_field(name="!corona list", value="To get list", inline=True)
-				embed.add_field(name="!corona list n", value="To get list n. Here n is page number(1-4)", inline=True)
+				embed.add_field(name="!corona list", value="Shows page 1 of list", inline=True)
+				embed.add_field(name="!corona list n", value="To get list n page. Here n is page number(1-4)", inline=True)
 				embed.set_footer(text="Type '!corona help' to know, how to see the other pages")
 				
 				await message.channel.send(embed=embed)

@@ -1,1 +1,1 @@
-heroku: python setup.py
+heroku: python bot/setup.py

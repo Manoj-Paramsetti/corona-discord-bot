@@ -1,14 +1,15 @@
-import discord
-import os
+import discord, os, requests, json
 from dotenv import load_dotenv
-import requests
-import json
+
+pages = ["Page 1 of 4\nAfghanistan, Albania, Algeria, Andorra, Angola, Antigua and Barbuda, Argentina, Armenia, Australia, Austria, Azerbaijan, Bahamas, Bahrain, Bangladesh, Barbados, Belarus, Belgium, Belize, Benin, Bhutan, Bolivia, Bosnia and Herzegovina, Botswana, Brazil, Brunei, Bulgaria, Burkina Faso, Burma, Burundi, Cabo Verde, Cambodia, Cameroon, Canada, Central African Republic, Chad, Chile, China, Colombia, Comoros, Congo (Brazzaville), Congo (Kinshasa), Costa Rica, Cote d'Ivoire, Croatia, Cuba, Cyprus, Czechia",
+	"Page 2 of 4\nDenmark, Diamond Princess, Djibouti, Dominica, Dominican Republic, Ecuador, Egypt, El Salvador, Equatorial Guinea, Eritrea, Estonia, Eswatini, Ethiopia, Fiji, Finland, France, Gabon, Gambia, Georgia, Germany, Ghana, Greece, Grenada, Guatemala, Guinea, Guinea-Bissau, Guyana, Haiti, Holy See, Honduras, Hungary, Iceland, India, Indonesia, Iran, Iraq, Ireland, Israel, Italy, Jamaica, Japan, Jordan, Kazakhstan, Kenya, Korea, South, Kosovo, Kuwait, Kyrgyzstan, Laos, Latvia, Lebanon, Lesotho",
+	"Page 3 of 4\nLiberia, Libya, Liechtenstein, Lithuania, Luxembourg, MS Zaandam, Madagascar, Malawi, Malaysia, Maldives, Mali, Malta, Marshall Islands, Mauritania, Mauritius, Mexico, Micronesia, Moldova, Monaco, Mongolia, Montenegro, Morocco, Mozambique, Namibia, Nepal, Netherlands, New Zealand, Nicaragua, Niger, Nigeria, North Macedonia, Norway, Oman, Pakistan, Panama, Papua New Guinea, Paraguay, Peru, Philippines, Poland, Portugal, Qatar, Romania, Russia, Rwanda, Saint Kitts and Nevis, Saint Lucia",
+	"Page 4 of 4\nSaint Vincent and the Grenadines, Samoa, San Marino, Sao Tome and Principe, Saudi Arabia, Senegal, Serbia, Seychelles, Sierra Leone, Singapore, Slovakia, Slovenia, Solomon Islands, Somalia, South Africa, South Sudan, Spain, Sri Lanka, Sudan, Suriname, Sweden, Switzerland, Syria, Taiwan*, Tajikistan, Tanzania, Thailand, Timor-Leste, Togo, Trinidad and Tobago, Tunisia, Turkey, US, Uganda, Ukraine, United Arab Emirates, United Kingdom, Uruguay, Uzbekistan, Vanuatu, Venezuela, Vietnam, West Bank and Gaza, Yemen, Zambia, Zimbabwe"]
 
 #importing dotenv file
 load_dotenv()
 
 client = discord.Client()
-countries = "Afghanistan\nAlbania\nAlgeria\nAndorra\nAngola\nAntigua and Barbuda\nArgentina\nArmenia\nAustralia\nAustria\nAzerbaijan\nBahamas\nBahrain\nBangladesh\nBarbados\nBelarus\nBelgium\nBelize\nBenin\nBhutan\nBolivia\nBosnia and Herzegovina\nBotswana\nBrazil\nBrunei\nBulgaria\nBurkina Faso\nBurma\nBurundi\nCabo Verde\nCambodia\nCameroon\nCanada\nCentral African Republic\nChad\nChile\nChina\nColombia\nComoros\nCongo (Brazzaville)\nCongo (Kinshasa)\nCosta Rica\nCote d'Ivoire\nCroatia\nCuba\nCyprus\nCzechia\nDenmark\nDiamond Princess\nDjibouti\nDominica\nDominican Republic\nEcuador\nEgypt\nEl Salvador\nEquatorial Guinea\nEritrea\nEstonia\nEswatini\nEthiopia\nFiji\nFinland\nFrance\nGabon\nGambia\nGeorgia\nGermany\nGhana\nGreece\nGrenada\nGuatemala\nGuinea\nGuinea-Bissau\nGuyana\nHaiti\nHoly See\nHonduras\nHungary\nIceland\nIndia\nIndonesia\nIran\nIraq\nIreland\nIsrael\nItaly\nJamaica\nJapan\nJordan\nKazakhstan\nKenya\nKorea, South\nKosovo\nKuwait\nKyrgyzstan\nLaos\nLatvia\nLebanon\nLesotho\nLiberia\nLibya\nLiechtenstein\nLithuania\nLuxembourg\nMS Zaandam\nMadagascar\nMalawi\nMalaysia\nMaldives\nMali\nMalta\nMarshall Islands\nMauritania\nMauritius\nMexico\nMicronesia\nMoldova\nMonaco\nMongolia\nMontenegro\nMorocco\nMozambique\nNamibia\nNepal\nNetherlands\nNew Zealand\nNicaragua\nNiger\nNigeria\nNorth Macedonia\nNorway\nOman\nPakistan\nPanama\nPapua New Guinea\nParaguay\nPeru\nPhilippines\nPoland\nPortugal\nQatar\nRomania\nRussia\nRwanda\nSaint Kitts and Nevis\nSaint Lucia\nSaint Vincent and the Grenadines\nSamoa\nSan Marino\nSao Tome and Principe\nSaudi Arabia\nSenegal\nSerbia\nSeychelles\nSierra Leone\nSingapore\nSlovakia\nSlovenia\nSolomon Islands\nSomalia\nSouth Africa\nSouth Sudan\nSpain\nSri Lanka\nSudan\nSuriname\nSweden\nSwitzerland\nSyria\nTaiwan*\nTajikistan\nTanzania\nThailand\nTimor-Leste\nTogo\nTrinidad and Tobago\nTunisia\nTurkey\nUS\nUganda\nUkraine\nUnited Arab Emirates\nUnited Kingdom\nUruguay\nUzbekistan\nVanuatu\nVenezuela\nVietnam\nWest Bank and Gaza\nYemen\nZambia\nZimbabwe\n"
 
 def getcases(country = "global"):
 	url = "https://covid19.mathdro.id/api"
@@ -21,12 +22,14 @@ def getcases(country = "global"):
 @client.event
 async def on_ready():
 	print("We have logged in as {0.user}".format(client))
-	await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='!corona'))
+	await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='!corona help'))
+    
 
 @client.event
 async def on_message(message):
 	
-	#checking whether bot message is recieved
+	global page
+
 	if message.author == client.user:
 		print("message is delivered")
 	
@@ -36,7 +39,12 @@ async def on_message(message):
 	
 	#checks when someone says help
 	if message.content.startswith("!help"):
-		await message.channel.send('''use this following commands:\n`!corona countryname`: To get corona virus status in particular country''')
+		await message.channel.send('''**use these following commands:**
+`!hello` or `!corona help` - Says hello and shows how to open help
+`!corona` - To get global corona virus status
+`!corona countryname` - To get corona virus status in particular country
+`!corona list` - To get list 1
+`!corona list n` - To get list n. Here n is page number(1-4)''')
 	
 	#checks when someone says corona
 	if message.content.startswith("!corona"):
@@ -45,35 +53,53 @@ async def on_message(message):
 			data, place = getcases() 
 			confirmed, recovered, death = data["confirmed"]["value"], data["recovered"]["value"], data["deaths"]["value"]
 			active = confirmed - (recovered + death)
-			await message.channel.send(' **'+place.upper()+' CORONA CASES STATS**\n**Active cases:** '+str(active)+'\n**Recovered:** '+str(recovered)+'\n**Death:** '+str(death)+'\n**Total Confirmed:** '+str(confirmed)+'')
+			await message.channel.send(' **'+place.upper()+' CORONA CASES STATUS**\n**Active cases:** '+str(active)+'\n**Recovered:** '+str(recovered)+'\n**Death:** '+str(death)+'\n**Total Confirmed:** '+str(confirmed)+'')
 
 		country = message.content.split() 
 		if len(country) >= 2:
 
 			#showing available places
 			if country[1] == "list":
+				
 				#Showing list of places
-				await message.channel.send("List of countries available:\n```yaml\n"+countries+"```")
+				if len(country) > 2: 
+					print(country)
+					if country[2] == "1":
+						await message.channel.send("List of countries available:\n```yaml\n"+pages[0]+"```")
+					if country[2] == "2":
+						await message.channel.send("List of countries available:\n```yaml\n"+pages[1]+"```")
+					if country[2] == "3":
+						await message.channel.send("List of countries available:\n```yaml\n"+pages[2]+"```")
+					if country[2] == "4":
+						await message.channel.send("List of countries available:\n```yaml\n"+pages[3]+"```")
+			
+				else:
+					await message.channel.send("List of countries available:\n```yaml\n"+pages[0]+"```Type `!corona help` to know, how to see the other pages")
 
+			elif  country[1] == "help":
+						await message.channel.send('''**use these following commands:**
+`!hello` or `!corona help` - Says hello and shows how to open help
+`!corona` - To get global corona virus status
+`!corona countryname` - To get corona virus status in particular country
+`!corona list` - To get list 1
+`!corona list n` - To get list n. Here n is page number(1-4)''')
 			else:
 				Country = ""
-				#replacing space with %20 for web request 
-				Country = Country.replace(" ", "%20")
 
 				#taking the splited element into concatenated string
 				for i in range(1,len(country)):
-					Country += country[i] + " " 
-				
+					Country += country[i] + " "
+
 				#This will work once author gives correct value to !corona token then it will get the data successfully from requests
 				try:
 					data, place = getcases(Country) 
 					confirmed, recovered, death = data["confirmed"]["value"], data["recovered"]["value"], data["deaths"]["value"]
 					active = confirmed - (recovered + death)
-					await message.channel.send(' **'+place.upper()+' CORONA CASES STATS**\n**Active cases:** '+str(active)+'\n**Recovered:** '+str(recovered)+'\n**Death:** '+str(death)+'\n**Total Confirmed:** '+str(confirmed)+'') 
+					await message.channel.send(' **'+place.upper()+' CORONA CASES STATUS**\n**Active cases:** '+str(active)+'\n**Recovered:** '+str(recovered)+'\n**Death:** '+str(death)+'\n**Total Confirmed:** '+str(confirmed)+'') 
 				
 				#This will work once author gives incorrect value to !corona token
 				except KeyError:
 					await message.channel.send("Send the correct arguments. Check the list of places using `!corona list`")
-
+					print("error")
 #Running bot using token id importing from .env file
 client.run(os.getenv('TOKEN'))

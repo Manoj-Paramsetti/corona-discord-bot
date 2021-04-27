@@ -13,11 +13,6 @@ client = commands.Bot(command_prefix="!", help_command=None)
 async def on_ready():
     print("Bot has logged in")
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='!help'))
-
-@client.event
-async def on_message(message):
-	if message.author == client.user:
-		print("message is delivered")
         
 #commands
 @client.command(name="hello", aliases=["Hello","hi","Hi"])

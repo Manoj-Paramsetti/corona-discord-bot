@@ -27,8 +27,8 @@ def getcorona(country):
             embed = EmbedCases(confirmed, recovered, death,active, place)
             return embed
         except KeyError:
-            print("unknown place is recieved")
-            title = "unknown place is recieved"
+            print("unknown place is received")
+            title = "unknown place is received"
             desc = "Send the correct arguments. Check the list of places using `!list`"
             embed = discord.Embed(title=title, description= desc, color=discord.Color.blue())
             return embed

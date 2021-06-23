@@ -1,7 +1,7 @@
 import discord, os, requests, json
 from assets.countries import countries_page as pages
 def EmbedCases(confirmed, recovered, death, active, place):
-	embed=discord.Embed(title = "Corona Cases Status", description = place, color = discord.Color.blue())
+	embed=discord.Embed(title = "Corona Case Stats", description = place, color = discord.Color.blue())
 	embed.add_field(name="Active Cases", value=active, inline=True)
 	embed.add_field(name="Recovered", value=recovered, inline=True)
 	embed.add_field(name="Deaths", value=death, inline=True)
@@ -17,7 +17,7 @@ def EmbedList(arg):
             embed.set_footer(text="Type '!corona help' to know, how to see the other pages")
             return embed
         else:
-            title = "Recieved incorrect page number"
+            title = "Received incorrect page number"
             desc = "Send the correct argument. Page number should have from 1 to 4"
             embed = discord.Embed(title=title, description=desc, color=discord.Color.blue())
             return embed

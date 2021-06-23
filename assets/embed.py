@@ -22,7 +22,7 @@ def EmbedList(arg):
             embed = discord.Embed(title=title, description=desc, color=discord.Color.blue())
             return embed
     else:
-        title = "Recieved incorrect page number"
+        title = "Received incorrect page number"
         desc = "Send the correct argument. Page number should have from 1 to 4 and only numerals"
         embed = discord.Embed(title=title, description=desc, color=discord.Color.blue())
         return embed
